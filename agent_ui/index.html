@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceShield Agent Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>VoiceShield</span>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active"><i class="fa-solid fa-headset"></i> <span>Dashboard</span></li>
+                    <li><i class="fa-solid fa-users"></i> <span>Customers</span></li>
+                    <li><i class="fa-solid fa-clock-rotate-left"></i> <span>History</span></li>
+                    <li class="menu-item"><i class="fa-solid fa-gear"></i> Settings</li>
+                    <li class="menu-item" id="sidebarLogoutBtn" style="margin-top: auto; color: var(--danger);"><i
+                            class="fa-solid fa-right-from-bracket"></i> Logout</li>
+                </ul>
+            </nav>
+            <div class="agent-profile">
+                <img src="https://ui-avatars.com/api/?name=Agent+Smith&background=random" alt="Agent">
+                <div class="info">
+                    <span class="name">Agent Smith</span>
+                    <span class="status">Online</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1>Call Center Dashboard</h1>
+                <div class="header-controls">
+                    <div class="status-indicator online">
+                        <span class="dot"></span> Ready for calls
+                    </div>
+                    <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Active Call Panel -->
+                <section class="call-panel glass-panel" id="callPanel">
+                    <div class="idle-state" id="idleState">
+                        <div class="radar-scan">
+                            <div class="radar-pulse"></div>
+                            <i class="fa-solid fa-satellite-dish"></i>
+                        </div>
+                        <h2>Waiting for incoming calls...</h2>
+                        <p>System is monitoring incoming traffic.</p>
+                        <button class="btn-primary" id="simulateCallBtn">Simulate Incoming Call</button>
+                    </div>
+
+                    <div class="incoming-call-state hidden" id="incomingCallState">
+                        <div class="caller-avatar-large pulse-animation">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <h2>Incoming Call</h2>
+                        <p class="caller-number">+1 (555) 123-4567</p>
+                        <p class="caller-location">California, USA</p>
+                        <div class="call-actions">
+                            <button class="btn-decline" id="declineBtn"><i class="fa-solid fa-phone-slash"></i>
+                                Decline</button>
+                            <button class="btn-answer" id="answerBtn"><i class="fa-solid fa-phone"></i> Answer</button>
+                        </div>
+                    </div>
+
+                    <div class="active-call-state hidden" id="activeCallState">
+                        <div class="call-header">
+                            <div class="timer" id="callTimer">00:00</div>
+                            <div class="signal-strength">
+                                <span class="bar full"></span>
+                                <span class="bar full"></span>
+                                <span class="bar full"></span>
+                                <span class="bar"></span>
+                            </div>
+                        </div>
+                        <div class="waveform-visualizer">
+                            <!-- Simulated bars for voice activity -->
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div>
+                        <div class="active-call-controls">
+                            <button class="control-btn mute"><i class="fa-solid fa-microphone-slash"></i></button>
+                            <button class="control-btn hangup" id="hangupBtn"><i
+                                    class="fa-solid fa-phone-slash"></i></button>
+                            <button class="control-btn keypad"><i class="fa-solid fa-grip"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Customer Info & Verification Panel -->
+                <section class="info-panel glass-panel">
+                    <div class="panel-header">
+                        <h3>Customer Information</h3>
+                        <span class="badge" id="verificationBadge">Unverified</span>
+                    </div>
+
+                    <div class="customer-details hidden" id="customerDetails">
+                        <div class="detail-row">
+                            <label>Name</label>
+                            <span id="custName">John Doe</span>
+                        </div>
+                        <div class="detail-row">
+                            <label>Account ID</label>
+                            <span>#88239102</span>
+                        </div>
+                        <div class="detail-row">
+                            <label>Phone</label>
+                            <span>+1 (555) 123-4567</span>
+                        </div>
+                        <div class="detail-row">
+                            <label>Member Since</label>
+                            <span>Nov 2021</span>
+                        </div>
+                    </div>
+
+                    <div class="placeholder-text" id="infoPlaceholder">
+                        <p>No active call information available.</p>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="verification-section">
+                        <h3>Voice Verification</h3>
+                        <div class="verification-status" id="verificationStatus">
+                            <p class="status-text">Waiting for voice input...</p>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="verifyProgressBar"></div>
+                            </div>
+                        </div>
+
+                        <div class="verification-result hidden" id="verificationResult">
+                            <!-- Will be populated by JS -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js?v=2"></script>
+</body>
+
+</html>

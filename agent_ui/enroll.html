@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceShield - Enroll Voice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .enroll-card {
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .recorder-section {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 1rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .record-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 0 20px rgba(79, 110, 242, 0.3);
+        }
+
+        .record-btn.recording {
+            background: var(--danger);
+            animation: pulse-red 1.5s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+        }
+
+        .status-badge.active {
+            color: var(--primary);
+            background: rgba(79, 110, 242, 0.1);
+        }
+
+        .instruction-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.5rem;
+            color: white;
+            font-family: var(--font-family);
+            outline: none;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            flex: 1;
+            font-family: var(--font-family);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glass-panel enroll-card">
+        <div class="logo" style="justify-content: center; margin-bottom: 0.5rem;">
+            <i class="fa-solid fa-microphone-lines"></i>
+            <span>Voice Enrollment</span>
+        </div>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Register your unique voice print</p>
+
+        <div class="input-group">
+            <label for="enrollUserId">Agent ID</label>
+            <input type="text" id="enrollUserId" placeholder="e.g. AGENT_007" required>
+        </div>
+
+        <div class="recorder-section">
+            <div id="statusBadge" class="status-badge">Ready to Record</div>
+            <div id="sampleBadge" class="status-badge"
+                style="margin-left: 0.5rem; color: var(--success); display: none;">Samples: 0/3</div>
+
+            <p class="instruction-text" id="instructionText">
+                Hold the button and say:<br>
+                <strong style="color: white; font-size: 1.1rem;">"My name is [Your Name], and I authorize my voice for
+                    authentication."</strong>
+            </p>
+
+            <button id="recordBtn" class="record-btn">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+
+            <div id="recordingTimer" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; display: none;">
+                0.0s</div>
+
+            <div class="action-btns">
+                <a href="login.html" class="btn-secondary" style="text-decoration: none; text-align: center;">Cancel</a>
+                <button id="submitEnrollBtn" class="btn-primary" disabled style="flex: 2;">
+                    Complete Enrollment
+                </button>
+            </div>
+        </div>
+
+        <p id="enrollMsg" style="margin-top: 1.5rem; min-height: 1.2em; font-size: 0.9rem;"></p>
+    </div>
+
+    <script src="enroll.js"></script>
+</body>
+
+</html>

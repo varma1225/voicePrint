@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceShield Agent Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.5rem;
+            color: white;
+            font-family: var(--font-family);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .error-msg {
+            color: var(--danger);
+            font-size: 0.9rem;
+            min-height: 1.2em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glass-panel login-card">
+        <div class="logo" style="justify-content: center; margin-bottom: 0.5rem;">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>VoiceShield</span>
+        </div>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Agent Authentication</p>
+
+        <form class="login-form" id="loginForm">
+            <div class="input-group">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="userId" placeholder="Enter Agent ID" required>
+            </div>
+
+            <p class="error-msg" id="errorMsg"></p>
+
+            <button type="submit" class="btn-primary" id="loginBtn">
+                Login <i class="fa-solid fa-arrow-right" style="margin-left: 0.5rem"></i>
+            </button>
+
+        </form>
+        <div style="margin-top: 1.5rem;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                New agent? <a href="enroll.html"
+                    style="color: var(--primary); text-decoration: none; font-weight: 500;">Enroll Voice</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+
+</html>

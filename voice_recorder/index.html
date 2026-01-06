@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Secure Voice Recorder</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #eef2f7, #dbeafe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: #ffffff;
+      width: 380px;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+
+    .card img {
+      width: 90px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin: 10px 0;
+      color: #1f2937;
+    }
+
+    p {
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 22px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #111827;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <!-- ICON IMAGE -->
+  <img src="https://cdn-icons-png.flaticon.com/512/709/709722.png" alt="Mic Icon">
+
+  <h2>🎙 Secure Voice Recorder</h2>
+  <p>Please speak clearly for voice authentication</p>
+
+  <button id="recordBtn">Start Recording</button>
+  <div id="status"></div>
+
+  <div class="footer">
+    16kHz • WAV • Secure Upload
+  </div>
+</div>
+
+<script>
+const RECORD_SECONDS = 5;
+const SAMPLE_RATE = 16000;
+
+let audioContext, processor, source, stream;
+let audioBuffer = [];
+
+const btn = document.getElementById("recordBtn");
+const statusText = document.getElementById("status");
+
+btn.onclick = async () => {
+  audioBuffer = [];
+  btn.disabled = true;
+  statusText.innerText = "🎙 Recording...";
+
+  stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  audioContext = new AudioContext({ sampleRate: SAMPLE_RATE });
+
+  source = audioContext.createMediaStreamSource(stream);
+  processor = audioContext.createScriptProcessor(4096, 1, 1);
+
+  processor.onaudioprocess = e => {
+    audioBuffer.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+  };
+
+  source.connect(processor);
+  processor.connect(audioContext.destination);
+
+  setTimeout(stopRecording, RECORD_SECONDS * 1000);
+};
+
+function stopRecording() {
+  processor.disconnect();
+  source.disconnect();
+  stream.getTracks().forEach(t => t.stop());
+
+  const wavBlob = createWav(audioBuffer, SAMPLE_RATE);
+  upload(wavBlob);
+
+  statusText.innerText = "⏳ Uploading...";
+}
+
+function createWav(buffers, sampleRate) {
+  let length = buffers.reduce((a, b) => a + b.length, 0);
+  let pcm = new Float32Array(length);
+  let offset = 0;
+
+  buffers.forEach(b => {
+    pcm.set(b, offset);
+    offset += b.length;
+  });
+
+  const buffer = new ArrayBuffer(44 + pcm.length * 2);
+  const view = new DataView(buffer);
+
+  write(view, 0, "RIFF");
+  view.setUint32(4, 36 + pcm.length * 2, true);
+  write(view, 8, "WAVEfmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+  write(view, 36, "data");
+  view.setUint32(40, pcm.length * 2, true);
+
+  let i = 44;
+  pcm.forEach(s => {
+    s = Math.max(-1, Math.min(1, s));
+    view.setInt16(i, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+    i += 2;
+  });
+
+  return new Blob([view], { type: "audio/wav" });
+}
+
+function write(view, offset, str) {
+  for (let i = 0; i < str.length; i++) {
+    view.setUint8(offset + i, str.charCodeAt(i));
+  }
+}
+
+async function upload(blob) {
+  const formData = new FormData();
+  formData.append("audio", blob, "voice.wav");
+
+  await fetch("http://127.0.0.1:8000/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  statusText.innerText = "✅ Voice saved successfully";
+  btn.disabled = false;
+}
+</script>
+
+</body>
+</html>

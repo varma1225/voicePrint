@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv*/
+.env
+
+# Data
+data/
+data1/
+processing/
+pretrained_models/
+
+# Logs and Debug
+enroll_debug.log
+*.log
+
+# Audio files (temp)
+*.wav
+*.npy
+
+# OS
+.DS_Store
+Thumbs.db
